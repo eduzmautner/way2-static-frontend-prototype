@@ -804,16 +804,131 @@ const W2Screens = (() => {
     return 'status';
   }
 
-  const gerenciador = (state) => U.shell(`
+  /* -------- Filters (no Figma frame — spreadsheet-style panel) --------
+     Filters apply live to the table. The same panel renders in two hosts:
+     an anchored flyout under the "Filtros" button on desktop (Prominent
+     shadow, per the guidelines' dropdown spec) and a bottom-sheet modal on
+     mobile, reusing the overlay system like Criar Post. */
+
+  function managerFilterInfo(state) {
+    const f = state.managerFilters;
+    const parse = s => { const [dd, mm, yy] = s.split('/').map(Number); return new Date(yy, mm - 1, dd); };
+    const rows = D.managedEvents.filter(e => {
+      if (f.status.length && !f.status.includes(e.status)) return false;
+      if (f.organizers.length && !f.organizers.includes(e.organizer)) return false;
+      if (f.tags.length && !e.tags.some(t => f.tags.includes(t))) return false;
+      if (f.from && parse(e.date) < new Date(`${f.from}T00:00:00`)) return false;
+      if (f.to && parse(e.date) > new Date(`${f.to}T23:59:59`)) return false;
+      return true;
+    });
+    const active = f.status.length + f.organizers.length + f.tags.length +
+                   (f.from ? 1 : 0) + (f.to ? 1 : 0);
+    return { rows, active };
+  }
+
+  function filterPanel(state, { head = false } = {}) {
+    const f = state.managerFilters;
+    const all = D.managedEvents;
+    const countBy = fn => all.reduce((m, e) => { const k = fn(e); m[k] = (m[k] || 0) + 1; return m; }, {});
+    const statusCounts = countBy(e => e.status);
+    const orgCounts = countBy(e => e.organizer);
+    const allTags = [...new Set(all.flatMap(e => e.tags))];
+
+    const checkRow = (action, value, label, count) => `
+      <button class="checkbox filter-check ${f[action === 'mf-status' ? 'status' : 'organizers'].includes(value) ? 'is-checked' : ''}"
+              type="button" data-action="${action}" data-value="${esc(value)}">
+        <span class="checkbox__box">${icon('check', { width: 2.4 })}</span>
+        <span class="filter-check__label">${label}</span>
+        <span class="filter-check__count">${count}</span>
+      </button>`;
+
+    return `
+      <div class="filter-panel">
+        ${head ? `
+          <div class="filter-panel__head">
+            <span class="t-small-label">Filtros</span>
+            ${managerFilterInfo(state).active
+              ? '<button class="filter-panel__clear" type="button" data-action="mf-clear">Limpar</button>' : ''}
+          </div>` : ''}
+
+        <div class="filter-section">
+          <span class="filter-section__label">Status</span>
+          ${Object.keys(statusCounts).map(s =>
+            checkRow('mf-status', s, `<span class="${statusClass(s)}">${esc(s)}</span>`, statusCounts[s])).join('')}
+        </div>
+
+        <div class="filter-section">
+          <span class="filter-section__label">Organizador</span>
+          ${Object.keys(orgCounts).map(o =>
+            checkRow('mf-organizer', o, esc(o), orgCounts[o])).join('')}
+        </div>
+
+        <div class="filter-section">
+          <span class="filter-section__label">Período</span>
+          <div class="filter-dates">
+            <label class="stacked-input">
+              <span class="stacked-input__label">De</span>
+              <input type="date" data-filter-date="from" value="${esc(f.from)}" aria-label="Data inicial">
+            </label>
+            <label class="stacked-input">
+              <span class="stacked-input__label">Até</span>
+              <input type="date" data-filter-date="to" value="${esc(f.to)}" aria-label="Data final">
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <span class="filter-section__label">Tags</span>
+          <div class="tag-row">
+            ${allTags.map(t => U.tag(t, { selectable: true, selected: f.tags.includes(t), action: 'mf-tag' })).join('')}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const filtrosOverlay = (state) => {
+    const info = managerFilterInfo(state);
+    return `
+      <div class="overlay" data-overlay="filtros">
+        <div class="modal modal--filters" role="dialog" aria-label="Filtros">
+          <div class="modal__head">
+            <span class="modal__title">Filtros</span>
+            <span class="spacer"></span>
+            <button class="icon-btn" type="button" data-action="close-overlay" aria-label="Fechar">${icon('x')}</button>
+          </div>
+          <div class="modal__body">${filterPanel(state)}</div>
+          <div class="modal__foot row">
+            <button class="btn btn--secondary" type="button" data-action="mf-clear">Limpar</button>
+            <button class="btn btn--primary" type="button" data-action="close-overlay" style="flex:1">
+              Ver ${info.rows.length} evento${info.rows.length === 1 ? '' : 's'}
+            </button>
+          </div>
+        </div>
+      </div>`;
+  };
+
+  const gerenciador = (state) => {
+    const info = managerFilterInfo(state);
+    return U.shell(`
     <div class="container">
       <header style="margin-bottom:var(--space-6)">
         <h1 class="t-section">Eventos</h1>
-        <p class="t-body manager__count">${D.managedEvents.length} eventos cadastrados</p>
+        <p class="t-body manager__count">${
+          info.active
+            ? `${info.rows.length} de ${D.managedEvents.length} eventos`
+            : `${D.managedEvents.length} eventos cadastrados`
+        }</p>
       </header>
 
       <div class="manager__head">
         ${U.searchInput({ placeholder: 'Buscar evento', square: true })}
-        <button class="btn btn--secondary" type="button">Filtros ${icon('filters')}</button>
+        <div class="filter-anchor">
+          <button class="btn btn--secondary" type="button" data-action="toggle-filters">
+            Filtros ${icon('filters')}
+            ${info.active ? `<span class="filter-count">${info.active}</span>` : ''}
+          </button>
+          ${state.filterOpen ? `<div class="filter-pop">${filterPanel(state, { head: true })}</div>` : ''}
+        </div>
         <a class="btn btn--primary" href="#/criar-evento" style="margin-left:auto">+ Criar evento</a>
       </div>
 
@@ -827,7 +942,7 @@ const W2Screens = (() => {
             </tr>
           </thead>
           <tbody>
-            ${D.managedEvents.map((e, i) => `
+            ${info.rows.map((e, i) => `
               <tr>
                 <td><span class="table__check ${state.checkedRows.includes(i) || state.allRowsChecked ? 'is-checked' : ''}"
                           data-action="toggle-row" data-row="${i}">${icon('check', { width: 2.4 })}</span></td>
@@ -840,8 +955,18 @@ const W2Screens = (() => {
               </tr>`).join('')}
           </tbody>
         </table>
+        ${info.rows.length ? '' : `
+          <div class="empty" style="min-height:160px">
+            <div>
+              <p class="t-subsection text-secondary">Nenhum evento com esses filtros</p>
+              <p style="margin-top:var(--space-3)">
+                <button class="link" type="button" data-action="mf-clear">Limpar filtros</button>
+              </p>
+            </div>
+          </div>`}
       </div>
     </div>`, { active: 'manager', title: 'Gerenciador', organizer: true });
+  };
 
   /* ============================ OVERLAYS ================================ */
 
@@ -1071,6 +1196,7 @@ const W2Screens = (() => {
     perfil, perfilMarcado, perfilMeusEventos, perfilPessoa, perfilOrganizador,
     editarPerfil, criarEvento, gerenciador, telas,
     criarPostOverlay, sendOverlay, searchOverlay, postOverlay, comentariosOverlay,
+    filtrosOverlay,
     INDEX
   };
 })();

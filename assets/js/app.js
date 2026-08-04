@@ -26,6 +26,8 @@
     commentPostId: null,
     checkedRows: [],
     allRowsChecked: false,
+    managerFilters: { status: [], organizers: [], tags: [], from: '', to: '' },
+    filterOpen: false,
     overlay: null,
     liked: new Set()
   };
@@ -88,7 +90,8 @@
     'enviar':      () => S.sendOverlay(state),
     'pesquisar':   () => S.searchOverlay(),
     'post':        () => S.postOverlay(),
-    'comentarios': () => S.comentariosOverlay(state)
+    'comentarios': () => S.comentariosOverlay(state),
+    'filtros':     () => S.filtrosOverlay(state)
   };
 
   function render() {
@@ -120,6 +123,14 @@
     renderDevbar();
 
     window.scrollTo(0, 0);
+  }
+
+  /* Re-render without the scroll-to-top a route change gets — for in-place
+     state changes like toggling a filter. */
+  function preserveRender() {
+    const y = window.scrollY;
+    render();
+    window.scrollTo(0, y);
   }
 
   function renderOverlay() {
@@ -178,6 +189,15 @@
 
     // Clicking the scrim closes the overlay.
     if (!trigger && event.target.classList.contains('overlay')) { closeOverlay(); return; }
+
+    // Clicking outside the filter flyout closes it. If the click also hit an
+    // action (e.g. the empty state's "Limpar filtros"), that action still
+    // runs — swallowing it would make visible buttons dead while the flyout
+    // is open.
+    if (state.filterOpen && !event.target.closest('.filter-anchor')) {
+      state.filterOpen = false;
+      preserveRender();
+    }
     if (!trigger) return;
 
     const action = trigger.dataset.action;
@@ -313,6 +333,36 @@
       case 'create-event':  toast('Evento criado'); return;
       case 'pick-day':      state.eventDay = Number(trigger.dataset.day); render(); return;
 
+      /* --- manager filters --- */
+      case 'toggle-filters':
+        if (window.matchMedia('(max-width: 767px)').matches) {
+          openOverlay('filtros');
+        } else {
+          state.filterOpen = !state.filterOpen;
+          preserveRender();
+        }
+        return;
+
+      case 'mf-status':
+        toggle(state.managerFilters.status, trigger.dataset.value);
+        preserveRender();
+        return;
+
+      case 'mf-organizer':
+        toggle(state.managerFilters.organizers, trigger.dataset.value);
+        preserveRender();
+        return;
+
+      case 'mf-tag':
+        toggle(state.managerFilters.tags, tag);
+        preserveRender();
+        return;
+
+      case 'mf-clear':
+        state.managerFilters = { status: [], organizers: [], tags: [], from: '', to: '' };
+        preserveRender();
+        return;
+
       /* --- manager table --- */
       case 'toggle-all-rows':
         state.allRowsChecked = !state.allRowsChecked;
@@ -425,8 +475,18 @@
     if (input && input.value.trim()) { toast('Mensagem enviada'); input.value = ''; }
   });
 
+  /* Period filter dates — committed on change, not per keystroke. */
+  document.addEventListener('change', (event) => {
+    const el = event.target.closest('[data-filter-date]');
+    if (!el) return;
+    state.managerFilters[el.dataset.filterDate] = el.value;
+    preserveRender();
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && state.overlay) closeOverlay();
+    if (event.key !== 'Escape') return;
+    if (state.overlay) { closeOverlay(); return; }
+    if (state.filterOpen) { state.filterOpen = false; preserveRender(); }
   });
 
   function toggle(list, value) {
@@ -437,6 +497,7 @@
   /* ---------------------------------------------------------------- boot */
   window.addEventListener('hashchange', () => {
     if (state.overlay && !location.hash.includes('overlay=')) state.overlay = null;
+    state.filterOpen = false;
     render();
   });
 

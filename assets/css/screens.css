@@ -414,6 +414,77 @@
 .manager__table-wrap { overflow-x: auto; }
 .manager__count { color: var(--text-secondary); }
 
+/* -------- Filters flyout + panel -------- */
+.filter-anchor { position: relative; }
+
+/* Active-criteria count on the Filtros button */
+.filter-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--action-bg);
+  color: var(--action-text);
+  font-size: var(--type-micro-size);
+  font-weight: 600;
+}
+
+/* Desktop flyout — anchored under the button; Prominent shadow is the
+   guideline spec for dropdown selections. */
+.filter-pop {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  z-index: 60;
+  width: 340px;
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-prominent);
+  padding: var(--space-5);
+}
+
+.filter-panel { display: flex; flex-direction: column; gap: var(--space-5); text-align: left; }
+.filter-panel__head { display: flex; align-items: center; justify-content: space-between; }
+.filter-panel__clear {
+  font-size: var(--type-meta-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.filter-panel__clear:hover { color: var(--text-primary); }
+
+.filter-section { display: flex; flex-direction: column; gap: var(--space-2); }
+.filter-section__label {
+  font-size: var(--type-small-label-size);
+  font-weight: var(--type-small-label-weight);
+}
+
+.filter-check { align-items: center; width: 100%; padding: var(--space-1) 0; }
+/* Unchecked boxes match the table-row checks (Divider Light), not the
+   strong border the onboarding checkbox uses. Checked state still wins. */
+.filter-check .checkbox__box { border-color: var(--border-default); }
+.filter-check__label { flex: 1; text-align: left; font-size: var(--type-body-size); }
+.filter-check__count { font-size: var(--type-meta-size); color: var(--text-secondary); }
+
+.filter-dates { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.filter-dates .stacked-input { background: var(--bg-surface-subtle); }
+.stacked-input__label { display: block; font-size: var(--type-micro-size); color: var(--text-secondary); }
+.filter-dates input[type="date"] {
+  width: 100%;
+  border: 0;
+  background: none;
+  outline: none;
+  padding: 0;
+  height: 22px;
+  font-size: var(--type-body-size);
+  color: var(--text-primary);
+}
+
 /* ============================ SCREEN INDEX =============================== */
 .index-grid {
   display: grid;
@@ -524,6 +595,10 @@ body.has-overlay .devbar { display: none; }
 
   .manager__head { flex-wrap: wrap; }
   .manager__head .search { max-width: none; flex-basis: 100%; }
+  /* On mobile the panel lives in the bottom-sheet overlay, never the flyout */
+  .filter-pop { display: none; }
+  .modal--filters .modal__body { max-height: 60dvh; }
+  .modal--filters .modal__foot { display: flex; gap: var(--space-3); }
 
   .ticket-summary__thumb { width: 64px; }
   .devbar { left: auto; right: var(--space-3); bottom: calc(var(--tabbar-height) + var(--space-3)); }
