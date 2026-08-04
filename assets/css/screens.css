@@ -12,7 +12,17 @@
 .onboarding__terms { margin: var(--space-4) 0; font-size: var(--type-micro-size); color: var(--text-primary); }
 .onboarding__submit { display: flex; justify-content: center; margin-top: var(--space-2); }
 .onboarding__or { margin: var(--space-6) 0; font-weight: 700; font-size: var(--type-meta-size); }
-.onboarding__sso { display: flex; gap: var(--space-4); justify-content: center; width: max-content; margin: 0 auto; }
+/* The SSO row is wider than the 292px form column (matching the Figma
+   frame), and an overflowing block hangs right instead of centering —
+   margin-left:50% + translateX(-50%) pins its center to the form's axis. */
+.onboarding__sso {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  width: max-content;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
 .onboarding__sso .btn { min-width: 232px; }
 .onboarding__foot { margin-top: var(--space-8); display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--type-meta-size); }
 
@@ -471,7 +481,7 @@ body.has-overlay .devbar { display: none; }
 
 @media (max-width: 767px) {
   .onboarding, .interests { max-width: 100%; }
-  .onboarding__sso { flex-direction: column; width: 100%; }
+  .onboarding__sso { flex-direction: column; width: 100%; margin-left: 0; transform: none; }
   .onboarding__sso .btn { min-width: 0; width: 100%; }
   .interests__grid { margin: var(--space-8) 0; }
 
