@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "way2-prototype",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["/Users/eduardomautner/Desktop/Dev/Way2/.claude/serve.js"],
+      "port": 8080
+    }
+  ]
+}

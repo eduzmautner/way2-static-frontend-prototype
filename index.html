@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <!-- interactive-widget=resizes-content: where supported, the layout
+       viewport shrinks with the on-screen keyboard, so bottom sheets resize
+       above it instead of Safari panning the page. Harmless elsewhere. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Way2 — protótipo estático</title>
+  <meta name="description" content="Protótipo estático do app Way2 — feed social, descoberta de eventos e área do organizador.">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Inter + Space Grotesk. The prototype degrades to the system UI stack
+       when offline; nothing else depends on the network. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/screens.css">
+</head>
+<body>
+  <div id="app"></div>
+  <div id="overlay-host"></div>
+  <div id="toast-host" class="toast-host"></div>
+  <div id="devbar" class="devbar"></div>
+
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/screens.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Way2 — reset, typography primitives, and the app shell
+   (desktop icon rail  /  mobile top bar + bottom tab bar)
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* The root carries the app background too: when iOS pans the page to keep a
+   focused field above the keyboard, the overscroll area it exposes renders
+   the root's background — this keeps that area on-theme instead of white. */
+html { background: var(--bg-app); }
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  line-height: var(--type-body-lh);
+  color: var(--text-primary);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--motion-base), color var(--motion-base);
+}
+
+h1, h2, h3, h4, p, figure, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+
+/* --------------------------------------------------------------- typography
+   One class per permitted combo. If a style isn't here, it isn't in the
+   system — that's deliberate. */
+.t-hero        { font-size: var(--type-hero-size);        font-weight: var(--type-hero-weight);        line-height: var(--type-hero-lh); letter-spacing: -0.02em; }
+.t-section     { font-size: var(--type-section-size);     font-weight: var(--type-section-weight);     line-height: var(--type-section-lh); letter-spacing: -0.01em; }
+.t-subsection  { font-size: var(--type-subsection-size);  font-weight: var(--type-subsection-weight);  line-height: var(--type-subsection-lh); }
+.t-item        { font-size: var(--type-item-size);        font-weight: var(--type-item-weight);        line-height: var(--type-item-lh); }
+.t-button      { font-size: var(--type-button-size);      font-weight: var(--type-button-weight);      line-height: var(--type-button-lh); }
+.t-small-label { font-size: var(--type-small-label-size); font-weight: var(--type-small-label-weight); line-height: var(--type-small-label-lh); }
+.t-body-lg     { font-size: var(--type-body-lg-size);     font-weight: var(--type-body-lg-weight);     line-height: var(--type-body-lg-lh); }
+.t-body        { font-size: var(--type-body-size);        font-weight: var(--type-body-weight);        line-height: var(--type-body-lh); }
+.t-meta        { font-size: var(--type-meta-size);        font-weight: var(--type-meta-weight);        line-height: var(--type-meta-lh); }
+.t-micro       { font-size: var(--type-micro-size);       font-weight: var(--type-micro-weight);       line-height: var(--type-micro-lh); }
+
+.t-accent-hero {
+  font-family: var(--font-accent);
+  font-size: var(--type-accent-hero-size);
+  font-weight: var(--type-accent-hero-weight);
+  line-height: var(--type-accent-hero-lh);
+  letter-spacing: -0.01em;
+}
+.t-accent-tag {
+  font-family: var(--font-accent);
+  font-size: var(--type-accent-tag-size);
+  font-weight: var(--type-accent-tag-weight);
+  line-height: var(--type-accent-tag-lh);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.text-secondary   { color: var(--text-secondary); }
+.text-placeholder { color: var(--text-placeholder); }
+
+/* ------------------------------------------------------------------- shell */
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app);
+}
+
+/* Brand mark — top-left of every signed-in screen, and centred on onboarding */
+.brand {
+  display: inline-flex;
+  align-items: center;
+}
+/* Height is left to the intrinsic 71:41 ratio of the supplied vector. */
+.brand svg { width: 62px; height: auto; }
+
+.app__brand {
+  position: fixed;
+  top: var(--space-6);
+  left: var(--space-6);
+  z-index: 40;
+}
+
+/* Desktop icon rail ------------------------------------------------------- */
+.rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--rail-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  z-index: 30;
+  background: var(--bg-app);
+}
+
+.rail__item {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-control);
+  color: var(--icon-default);
+  transition: color var(--motion-fast), background-color var(--motion-fast);
+}
+.rail__item svg { width: 26px; height: 26px; }
+.rail__item:hover { color: var(--icon-active); background: var(--bg-surface-subtle); }
+.rail__item.is-active { color: var(--icon-active); }
+.rail__item.is-active svg { stroke-width: 2.25; }
+
+/* The profile rail item carries an unread dot in every desktop artboard */
+.rail__item .dot {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--badge-unread);
+}
+
+/* Mobile chrome ----------------------------------------------------------- */
+.topbar,
+.tabbar { display: none; }
+
+/* Main content region ----------------------------------------------------- */
+.main {
+  flex: 1;
+  padding-left: var(--rail-width);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-12);
+  min-width: 0;
+}
+.main--flush { padding-top: 0; padding-bottom: 0; }
+.main--bare  { padding-left: 0; }
+
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+.container--feed   { max-width: calc(var(--feed-width) + var(--space-6) * 2); }
+.container--narrow { max-width: 620px; }
+
+.stack   { display: flex; flex-direction: column; }
+.stack-2 { gap: var(--space-2); }
+.stack-3 { gap: var(--space-3); }
+.stack-4 { gap: var(--space-4); }
+.stack-6 { gap: var(--space-6); }
+.stack-8 { gap: var(--space-8); }
+
+.row { display: flex; align-items: center; gap: var(--space-3); }
+.row--between { justify-content: space-between; }
+.spacer { flex: 1; }
+
+.section-gap { margin-top: var(--space-8); }
+
+/* Screen scaffolding ------------------------------------------------------ */
+.screen { animation: screen-in var(--motion-base); }
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}
+
+/* Centred single-column layout used by every onboarding frame */
+.centered-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+
+/* ============================== MOBILE ===================================
+   Only two mobile artboards exist in Figma (Home and its dark variant).
+   The pattern they establish — sticky top bar, single column, bottom tab
+   bar — is applied uniformly below rather than invented per screen.
+   ========================================================================= */
+@media (max-width: 767px) {
+  .rail { display: none; }
+  .app__brand { display: none; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    height: var(--topbar-height);
+    padding: 0 var(--space-4);
+    background: var(--bg-app);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .topbar__actions { display: flex; align-items: center; gap: var(--space-5); }
+  .topbar__action  { color: var(--icon-active); display: grid; place-items: center; }
+  .topbar__action svg { width: 24px; height: 24px; }
+  .topbar__title { font-size: var(--type-item-size); font-weight: var(--type-item-weight); }
+  .topbar .brand svg { width: 50px; }
+
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: var(--tabbar-height);
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg-app);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .tabbar__item {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: var(--icon-default);
+  }
+  .tabbar__item svg { width: 26px; height: 26px; }
+  .tabbar__item.is-active { color: var(--icon-active); }
+  .tabbar__item.is-active svg { stroke-width: 2.25; }
+  .tabbar__item .dot {
+    position: absolute;
+    top: 10px;
+    right: 22%;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--badge-unread);
+  }
+
+  .main {
+    padding-left: 0;
+    padding-top: var(--space-4);
+    padding-bottom: calc(var(--tabbar-height) + var(--space-8));
+  }
+  .main--flush { padding-top: 0; }
+
+  .container { padding: 0 var(--space-4); }
+  .centered-screen { padding: var(--space-8) var(--space-4); justify-content: flex-start; padding-top: var(--space-12); }
+}
+
+/* Tablet — rail stays, content narrows */
+@media (min-width: 768px) and (max-width: 1099px) {
+  :root { --rail-width: 68px; }
+  .container { padding: 0 var(--space-5); }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

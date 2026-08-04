@@ -1,0 +1,178 @@
+/* ==========================================================================
+   Way2 — Design tokens
+   Transcribed from Figma frame "design-guidelines" (node 811:728).
+
+   Layer 1  : raw palette   (--w2-*)   — never used directly in components
+   Layer 2  : semantic alias (--bg-*, --text-*, --border-*, ...)
+   Layer 3  : scales        (type / radius / shadow / space / motion)
+
+   Dark mode is a single [data-theme="dark"] flip of layer 2. No component
+   in this prototype hand-writes a dark style.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------- layer 1
+     Raw palette — light */
+  --w2-white:           #FFFFFF;
+  --w2-extra-light-grey:#FAFAFA;
+  --w2-light-grey:      #D9D9D9;
+  --w2-divider-light:   #CCCCCC;
+  --w2-text-primary:    #000000;
+  --w2-text-secondary:  #606060;
+  --w2-placeholder:     #808080;
+  --w2-accent-green:    #529A60;
+  --w2-orange-start:    #FF5C00;
+  --w2-orange-end:      #FF9900;
+
+  /* Raw palette — dark */
+  --w2-surface-dark:    #1A1A1A;
+  --w2-dark-card-bkg:   #212121;
+  --w2-default-icon:    #333333;
+  --w2-selected-icon:   #E6E6E6;
+  --w2-text-white:      #FFFFFF;
+  --w2-text-sec-dark:   #B3B3B3;
+  --w2-elevated-card:   #252525;
+  --w2-search-bar:      #3A3A3A;
+
+  /* ---------------------------------------------------------------- layer 3
+     Typography — Inter is the sole UI face. Space Grotesk is reserved for
+     onboarding hero titles and category tags only. */
+  --font-ui:     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-accent: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* The 10 permitted Inter weight/size combos. Nothing else is allowed. */
+  --type-hero-size:        32px;  --type-hero-weight:        700;  --type-hero-lh:        1.2;
+  --type-section-size:     24px;  --type-section-weight:     700;  --type-section-lh:     1.25;
+  --type-subsection-size:  20px;  --type-subsection-weight:  600;  --type-subsection-lh:  1.3;
+  --type-item-size:        16px;  --type-item-weight:        600;  --type-item-lh:        1.35;
+  --type-button-size:      14px;  --type-button-weight:      600;  --type-button-lh:      1.35;
+  --type-small-label-size: 12px;  --type-small-label-weight: 600;  --type-small-label-lh: 1.35;
+  --type-body-lg-size:     20px;  --type-body-lg-weight:     400;  --type-body-lg-lh:     1.45;
+  --type-body-size:        14px;  --type-body-weight:        400;  --type-body-lh:        1.5;
+  --type-meta-size:        12px;  --type-meta-weight:        400;  --type-meta-lh:        1.45;
+  --type-micro-size:       10px;  --type-micro-weight:       400;  --type-micro-lh:       1.4;
+
+  /* Space Grotesk — 2 permitted combos */
+  --type-accent-hero-size:   40px; --type-accent-hero-weight: 500; --type-accent-hero-lh: 1.15;
+  --type-accent-tag-size:    12px; --type-accent-tag-weight:  400; --type-accent-tag-lh:  1;
+
+  /* Radii — two values, plus one sanctioned exception.
+     Supersedes the 6/12/24 scale in `design-guidelines` (811:728): the 24px
+     structural tier was retired because it only ever applied to four
+     elements and made modals read differently from every other surface.
+     See README "Radii" for the full rationale and the migration mapping.
+
+       control  → anything you press or tick: buttons, checkboxes, icon
+                  buttons, small thumbs. Roughly ≤ 44px on its short edge.
+       surface  → anything that holds content: cards, inputs, media, panels,
+                  modals, structural segments.
+       pill     → chips only. Fully rounded is a shape, not a radius step,
+                  which is why it isn't a third value on the scale. */
+  --radius-control: 6px;
+  --radius-surface: 12px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-subtle:    0px 2px 10px rgba(0, 0, 0, 0.12);
+  --shadow-prominent: 0px 4px 16px rgba(22, 22, 22, 0.12);
+
+  /* Spacing — 4px base unit */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Layout constants derived from the desktop artboards (1512px wide) */
+  --rail-width: 80px;
+  --feed-width: 500px;
+  --content-max: 1100px;
+  --tabbar-height: 64px;
+  --topbar-height: 56px;
+
+  --motion-fast: 120ms ease;
+  --motion-base: 200ms ease;
+
+  /* ---------------------------------------------------------------- layer 2
+     Semantic aliases — light theme */
+  --bg-app:            var(--w2-white);
+  --bg-surface:        var(--w2-white);
+  --bg-surface-subtle: var(--w2-extra-light-grey);
+  --bg-elevated:       var(--w2-white);
+  --bg-input:          var(--w2-white);
+  --bg-search:         var(--w2-white);
+  --bg-media:          var(--w2-light-grey);
+  --bg-scrim:          rgba(0, 0, 0, 0.55);
+  --bg-disabled:       var(--w2-light-grey);
+
+  --text-primary:     var(--w2-text-primary);
+  --text-secondary:   var(--w2-text-secondary);
+  --text-placeholder: var(--w2-placeholder);
+  --text-inverse:     var(--w2-white);
+  --text-disabled:    var(--w2-text-secondary);
+
+  --border-default:  var(--w2-divider-light);
+  --border-subtle:   var(--w2-light-grey);
+  --border-strong:   var(--w2-text-primary);
+
+  --icon-default:  var(--w2-text-secondary);
+  --icon-active:   var(--w2-text-primary);
+
+  --accent:         var(--w2-accent-green);
+  --accent-soft:    rgba(82, 154, 96, 0.12);
+  --brand-gradient: linear-gradient(90deg, var(--w2-orange-start), var(--w2-orange-end));
+
+  --action-bg:       var(--w2-text-primary);
+  --action-text:     var(--w2-white);
+  --action-bg-hover: #262626;
+
+  --badge-unread: #FF3B30;
+
+  /* Chat conversation backdrop — sampled from the Chat 2 artboard */
+  --chat-canvas: linear-gradient(135deg, #A9CCF2 0%, #CFE0F5 45%, #EDF3FB 100%);
+  --chat-bubble-in:  var(--w2-white);
+  --chat-bubble-out: var(--w2-white);
+}
+
+[data-theme="dark"] {
+  --bg-app:            var(--w2-surface-dark);
+  --bg-surface:        var(--w2-dark-card-bkg);
+  --bg-surface-subtle: var(--w2-dark-card-bkg);
+  --bg-elevated:       var(--w2-elevated-card);
+  --bg-input:          var(--w2-elevated-card);
+  --bg-search:         var(--w2-search-bar);
+  --bg-media:          var(--w2-default-icon);
+  --bg-scrim:          rgba(0, 0, 0, 0.7);
+  --bg-disabled:       var(--w2-default-icon);
+
+  --text-primary:     var(--w2-text-white);
+  --text-secondary:   var(--w2-text-sec-dark);
+  --text-placeholder: var(--w2-placeholder);
+  --text-inverse:     var(--w2-surface-dark);
+  --text-disabled:    var(--w2-placeholder);
+
+  --border-default: var(--w2-default-icon);
+  --border-subtle:  var(--w2-default-icon);
+  --border-strong:  var(--w2-selected-icon);
+
+  --icon-default: var(--w2-placeholder);
+  --icon-active:  var(--w2-selected-icon);
+
+  --accent:      var(--w2-accent-green);
+  --accent-soft: rgba(82, 154, 96, 0.18);
+
+  --action-bg:       var(--w2-text-white);
+  --action-text:     var(--w2-surface-dark);
+  --action-bg-hover: #E6E6E6;
+
+  --shadow-subtle:    0px 2px 10px rgba(0, 0, 0, 0.4);
+  --shadow-prominent: 0px 4px 16px rgba(0, 0, 0, 0.5);
+
+  --chat-canvas: linear-gradient(135deg, #1E2A38 0%, #202730 45%, #212121 100%);
+  --chat-bubble-in:  var(--w2-elevated-card);
+  --chat-bubble-out: var(--w2-elevated-card);
+}

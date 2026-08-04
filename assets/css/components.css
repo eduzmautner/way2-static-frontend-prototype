@@ -1,0 +1,677 @@
+/* ==========================================================================
+   Way2 — reusable components
+   Each block here maps to one component in the phase-2 React library.
+   ========================================================================== */
+
+/* ----------------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-control);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--motion-fast), color var(--motion-fast),
+              border-color var(--motion-fast), opacity var(--motion-fast);
+}
+.btn svg { width: 16px; height: 16px; }
+
+.btn--primary { background: var(--action-bg); color: var(--action-text); }
+.btn--primary:hover { background: var(--action-bg-hover); }
+
+.btn--secondary {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.btn--secondary:hover { border-color: var(--border-strong); }
+
+.btn--ghost { background: var(--bg-surface-subtle); color: var(--text-primary); }
+.btn--ghost:hover { background: var(--bg-media); }
+
+.btn--quiet { background: var(--bg-surface-subtle); color: var(--text-secondary); }
+
+.btn--block { width: 100%; }
+/* Size changes the height, never the radius — that's what keeps a row of
+   mixed-size buttons reading as one family. */
+.btn--lg { height: 44px; padding: 0 var(--space-6); }
+.btn--sm { height: 28px; padding: 0 var(--space-3); font-size: var(--type-small-label-size); }
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background: var(--bg-disabled);
+  color: var(--text-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+/* Back chip — "← VOLTAR", used on every secondary/detail screen */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--bg-surface-subtle);
+  color: var(--text-primary);
+  font-size: var(--type-micro-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.btn-back svg { width: 14px; height: 14px; }
+.btn-back:hover { background: var(--bg-media); }
+
+/* Bare icon button */
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-control);
+  color: var(--icon-active);
+  transition: background-color var(--motion-fast), color var(--motion-fast);
+}
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn:hover { background: var(--bg-surface-subtle); }
+.icon-btn.is-on { color: var(--text-primary); }
+.icon-btn.is-on svg { fill: currentColor; }
+
+/* Circular outline "+" used to follow an organizer inline */
+.follow-plus {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--icon-active);
+}
+.follow-plus svg { width: 22px; height: 22px; }
+.follow-plus.is-following { color: var(--accent); }
+
+/* -------------------------------------------------------------------- tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-accent);
+  font-size: var(--type-accent-tag-size);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  background: transparent;
+  transition: background-color var(--motion-fast), color var(--motion-fast);
+}
+.tag--selectable { cursor: pointer; }
+.tag--selectable:hover { background: var(--bg-surface-subtle); }
+.tag.is-selected {
+  background: var(--action-bg);
+  color: var(--action-text);
+  border-color: var(--action-bg);
+}
+.tag__remove { display: inline-grid; place-items: center; color: var(--text-secondary); }
+.tag__remove svg { width: 12px; height: 12px; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Status pill — organizer table. A chip, so it takes the pill exception. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 24px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--type-small-label-size);
+  font-weight: var(--type-small-label-weight);
+}
+.status::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status--past    { background: var(--bg-surface-subtle); color: var(--text-secondary); }
+.status--live    { background: rgba(255, 92, 0, 0.12); color: var(--w2-orange-start); }
+
+/* ------------------------------------------------------------------ inputs */
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.field__label {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  color: var(--text-primary);
+}
+.field__hint { font-size: var(--type-meta-size); color: var(--text-secondary); }
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-surface);
+  color: var(--text-primary);
+  font-size: var(--type-body-size);
+  transition: border-color var(--motion-fast), background-color var(--motion-base);
+}
+.input  { height: 40px; padding: 0 var(--space-4); }
+.select { height: 40px; padding: 0 var(--space-4); appearance: none;
+          background-image: none; cursor: pointer; }
+.textarea { min-height: 120px; padding: var(--space-3) var(--space-4); resize: vertical; }
+
+.input::placeholder,
+.textarea::placeholder { color: var(--text-placeholder); }
+.input:focus,
+.textarea:focus,
+.select:focus { outline: none; border-color: var(--border-strong); }
+
+/* Search input — pill, leading magnifier */
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 40px;
+  padding: 0 var(--space-4);
+  background: var(--bg-search);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  color: var(--text-placeholder);
+}
+.search svg { width: 18px; height: 18px; flex: none; }
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: var(--type-body-size);
+  color: var(--text-primary);
+}
+.search input::placeholder { color: var(--text-placeholder); }
+.search--square { border-radius: var(--radius-surface); }
+
+/* Counter tucked into the corner of a textarea / input */
+.counted { position: relative; }
+.counted__count {
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-3);
+  font-size: var(--type-meta-size);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  text-align: left;
+}
+.checkbox__box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  color: transparent;
+  transition: background-color var(--motion-fast), color var(--motion-fast);
+}
+.checkbox__box svg { width: 13px; height: 13px; }
+.checkbox.is-checked .checkbox__box {
+  background: var(--action-bg);
+  border-color: var(--action-bg);
+  color: var(--action-text);
+}
+
+.radio {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border-default);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.radio.is-checked { border-color: var(--border-strong); }
+.radio.is-checked::after {
+  content: "";
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--text-primary);
+}
+
+/* Inline link style used across onboarding + legal copy */
+.link { text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+
+/* ----------------------------------------------------------------- avatars */
+.avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-media);
+  overflow: hidden;
+  font-size: var(--type-meta-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.avatar--xs { width: 28px; height: 28px; font-size: var(--type-micro-size); }
+.avatar--sm { width: 32px; height: 32px; }
+.avatar--lg { width: 56px; height: 56px; font-size: var(--type-body-size); }
+.avatar--xl { width: 120px; height: 120px; font-size: var(--type-section-size); }
+.avatar__art { width: 100%; height: 100%; }
+
+.avatar-stack { display: flex; }
+.avatar-stack .avatar + .avatar { margin-left: -12px; }
+
+/* ------------------------------------------------------------------- media
+   Figma renders every photo slot as a flat #D9D9D9 block. These deterministic
+   gradient tiles stand in for real imagery so the prototype reads as a real
+   product during review — see README "Known deviations". */
+.media {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-surface);
+  background: var(--bg-media);
+  overflow: hidden;
+}
+.media--square { aspect-ratio: 1 / 1; }
+.media--poster { aspect-ratio: 4 / 5; }
+.media__art {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  text-align: center;
+}
+.media__label {
+  font-family: var(--font-accent);
+  font-size: var(--type-accent-tag-size);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+.media--flat .media__art { background: var(--bg-media); }
+
+/* ------------------------------------------------------------------- cards */
+.card {
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-surface);
+  padding: var(--space-4);
+}
+.card--flush { padding: 0; overflow: hidden; }
+/* Structural containers differ from ordinary cards by padding only. They used
+   to carry a larger radius too; see README "Radii". */
+.card--structural { padding: var(--space-6); }
+.card--elevated { background: var(--bg-elevated); box-shadow: var(--shadow-subtle); }
+
+.panel {
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-surface);
+  padding: var(--space-4);
+}
+
+.divider { height: 1px; background: var(--border-subtle); border: 0; }
+
+/* --------------------------------------------------------------- feed post */
+.post { display: flex; flex-direction: column; gap: var(--space-3); }
+.post + .post { margin-top: var(--space-8); }
+
+.post__head { display: flex; align-items: center; gap: var(--space-3); }
+.post__author { display: flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+.post__username {
+  font-size: var(--type-item-size);
+  font-weight: var(--type-item-weight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.post__following { font-size: var(--type-meta-size); color: var(--text-secondary); white-space: nowrap; }
+.post__organizer { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+.post__organizer-handle { font-size: var(--type-item-size); font-weight: var(--type-item-weight); }
+/* The desktop Home artboard shows the organizer handle alone; only the
+   iPhone 16 frame adds the inline follow control. */
+@media (min-width: 768px) { .post__organizer .follow-plus { display: none; } }
+
+.post__actions { display: flex; align-items: center; gap: var(--space-1); }
+.post__actions .icon-btn svg { width: 26px; height: 26px; }
+.post__event { margin-left: auto; display: flex; align-items: baseline; gap: var(--space-2); }
+.post__event-name { font-size: var(--type-item-size); font-weight: var(--type-item-weight); }
+.post__event-date { font-size: var(--type-body-size); }
+
+.post__likes { font-size: var(--type-body-size); }
+.post__likes strong { font-weight: 600; }
+.post__description { font-size: var(--type-body-size); color: var(--text-primary); }
+
+/* Rating — four-point sparkles, filled up to `rating` */
+.rating { display: flex; align-items: center; gap: var(--space-2); }
+.rating svg { width: 20px; height: 20px; color: var(--text-primary); }
+.rating .is-off { color: var(--border-default); }
+.rating--input svg { cursor: pointer; }
+
+/* ------------------------------------------------------------- event cards */
+.event-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-surface);
+  padding: var(--space-3);
+}
+.event-card__head { display: flex; align-items: center; gap: var(--space-2); }
+.event-card__organizer { font-size: var(--type-item-size); font-weight: var(--type-item-weight); }
+.event-card__title-row { display: flex; align-items: flex-start; gap: var(--space-3); }
+.event-card__title { font-size: var(--type-item-size); font-weight: var(--type-item-weight); flex: 1; }
+.event-card__meta { font-size: var(--type-meta-size); color: var(--text-primary); }
+.event-card__meta span { display: block; }
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+/* Compact horizontal event row — search results, saved lists */
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-surface);
+  padding: var(--space-3) var(--space-4);
+}
+.event-row__thumb {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-control);
+  background: var(--bg-media);
+  overflow: hidden;
+  position: relative;
+}
+.event-row__body { flex: 1; min-width: 0; }
+.event-row__title { font-size: var(--type-button-size); font-weight: 700; }
+.event-row__meta { font-size: var(--type-meta-size); color: var(--text-primary); }
+
+/* --------------------------------------------------------------- list rows */
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+}
+.list-row__body { flex: 1; min-width: 0; }
+.list-row__trailing { flex: none; display: flex; align-items: center; gap: var(--space-3); }
+.list-row__thumb {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-control);
+  background: var(--bg-media);
+  overflow: hidden;
+  position: relative;
+}
+
+/* -------------------------------------------------------------------- tabs */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  border-bottom: 1px solid transparent;
+}
+.tabs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: color var(--motion-fast), border-color var(--motion-fast);
+}
+.tabs__item svg { width: 18px; height: 18px; }
+.tabs__item.is-active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+.tabs__item:hover { color: var(--text-primary); }
+
+/* ------------------------------------------------------------------ modals */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: var(--bg-scrim);
+  animation: overlay-in var(--motion-base);
+}
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: min(86vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--shadow-prominent);
+  overflow: hidden;
+}
+.modal--sheet { max-width: 531px; }
+.modal--wide  { max-width: 780px; }
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.modal__title { font-size: var(--type-button-size); font-weight: var(--type-button-weight); }
+.modal__body { padding: var(--space-5); overflow-y: auto; }
+.modal textarea { resize: none; }
+.modal__body--flush { padding: 0; }
+.modal__foot { padding: var(--space-4) var(--space-5); border-top: 1px solid var(--border-subtle); }
+
+/* --------------------------------------------------------- comments modal */
+.modal--comments { max-width: 780px; height: min(86vh, 620px); }
+.modal--comments .modal__body { flex: 1; min-height: 0; overflow: hidden; }
+
+.comments-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  height: 100%;
+}
+.comments-media { position: relative; }
+.comments-media .media { height: 100%; border-radius: 0; }
+
+.comments-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid var(--border-subtle);
+}
+.comments-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.comment { display: flex; align-items: flex-start; gap: var(--space-3); }
+.comment__body { flex: 1; min-width: 0; }
+.comment__text { font-size: var(--type-body-size); overflow-wrap: anywhere; }
+.comment__text strong { font-weight: 600; }
+.comment__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  font-size: var(--type-meta-size);
+  color: var(--text-secondary);
+}
+.comment__meta button { font-size: var(--type-meta-size); font-weight: 600; color: inherit; }
+.comment__meta button:hover { color: var(--text-primary); }
+.comment__like { width: 24px; height: 24px; }
+.comment__like svg { width: 15px; height: 15px; }
+
+.comments-composer {
+  display: flex;
+  /* flex-end, not center: when the textarea grows to multiple lines the
+     avatar and "Publicar" should hug the last line, like WhatsApp/Instagram. */
+  align-items: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+.comments-composer textarea {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  resize: none;
+  padding: 4px 0; /* optical alignment with the 28px avatar on one line */
+  font-size: var(--type-body-size);
+  line-height: 1.4;
+  color: var(--text-primary);
+  /* Grows with content (JS sets height) up to ~4 lines, then scrolls. */
+  max-height: 88px;
+  overflow-y: auto;
+}
+.comments-composer textarea::placeholder { color: var(--text-placeholder); }
+.comments-composer [type="submit"] { padding-bottom: 6px; }
+/* "Publicar" sits dimmed until there's something to publish — the familiar
+   composer affordance. */
+.comments-composer [type="submit"] {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  color: var(--text-placeholder);
+}
+.comments-composer [type="submit"].is-ready { color: var(--text-primary); }
+
+/* ------------------------------------------------------------------- table */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--type-micro-size);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.table td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--type-button-size);
+  vertical-align: middle;
+}
+.table tbody tr:nth-child(even) { background: var(--bg-surface-subtle); }
+.table__event { font-weight: 700; }
+.table__check {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-control);
+  display: grid; place-items: center;
+  color: transparent;
+}
+.table__check.is-checked {
+  background: var(--action-bg);
+  border-color: var(--action-bg);
+  color: var(--action-text);
+}
+.table__check svg { width: 12px; height: 12px; }
+
+/* ------------------------------------------------------------ empty states */
+.empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  min-height: 240px;
+  padding: var(--space-8);
+  color: var(--text-placeholder);
+}
+.empty__title {
+  font-size: var(--type-section-size);
+  font-weight: var(--type-section-weight);
+  line-height: var(--type-section-lh);
+  max-width: 16ch;
+}
+
+/* ------------------------------------------------------------------ toasts */
+.toast-host {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-8);
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+.toast {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--action-bg);
+  color: var(--action-text);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  box-shadow: var(--shadow-prominent);
+  animation: toast-in var(--motion-base);
+}
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 767px) {
+  .event-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+  .overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    max-width: none;
+    max-height: 92dvh;
+    border-radius: var(--radius-surface) var(--radius-surface) 0 0;
+  }
+
+  /* While any modal is open on mobile, blank the app underneath. When the
+     iOS keyboard opens, Safari pans the page to keep the focused field
+     visible and drags content from below the viewport into view — with the
+     app hidden, that exposed area is plain background instead of the feed.
+     Desktop keeps the dimmed-app scrim look. */
+  body.has-overlay #app { visibility: hidden; }
+
+  /* Comments become the familiar bottom sheet: media drops out, the sheet
+     holds a fixed height so the keyboard/composer stays reachable. */
+  .modal--comments { height: 78dvh; }
+  .comments-grid { grid-template-columns: minmax(0, 1fr); }
+  .comments-media { display: none; }
+  .comments-pane { border-left: 0; }
+  .toast-host { bottom: calc(var(--tabbar-height) + var(--space-4)); }
+}
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  .event-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
