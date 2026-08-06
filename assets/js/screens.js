@@ -108,16 +108,28 @@ const W2Screens = (() => {
 
   const FILTERS = ['Festas', 'Arte', 'Esporte', 'Música', 'Ar livre'];
 
-  const eventos = (state) => U.shell(`
+  /* Every interest that exists anywhere in the mock data — the onboarding
+     taxonomy plus tags used by events and organizer profiles. */
+  const allInterests = () => [...new Set([
+    ...D.interests,
+    ...D.events.flatMap(e => e.tags),
+    ...D.organizers.flatMap(o => o.interests)
+  ])];
+
+  const eventos = (state) => {
+    // Base row plus any modal-picked filter not already in it, so an active
+    // filter is never invisible.
+    const rowFilters = [...FILTERS, ...state.activeFilters.filter(f => !FILTERS.includes(f))];
+    return U.shell(`
     <div class="container">
       <h2 class="t-body-lg eventos__filter-label">Filtrar por interesse</h2>
       <div class="eventos__filters">
-        ${FILTERS.map(f => U.tag(f, {
+        ${rowFilters.map(f => U.tag(f, {
           selectable: true,
           selected: state.activeFilters.includes(f),
           action: 'toggle-filter'
         })).join('')}
-        <a class="eventos__more" href="#/onboarding/interesses">ver mais</a>
+        <button class="eventos__more" type="button" data-action="open-interests">ver mais</button>
       </div>
 
       <div class="event-grid eventos__grid">
@@ -126,6 +138,7 @@ const W2Screens = (() => {
       ${filteredEvents(state).length ? '' : `
         <div class="empty"><p class="empty__title">Nenhum evento com esses interesses</p></div>`}
     </div>`, { active: 'events', title: 'Eventos' });
+  };
 
   function filteredEvents(state) {
     if (!state.activeFilters.length) return D.events;
@@ -558,7 +571,7 @@ const W2Screens = (() => {
       <div class="container">
         <div style="margin-bottom:var(--space-6)">${U.backButton('#/home')}</div>
         ${profileHeader(view, { own: false })}
-        ${tileGrid(D.taggedPosts.slice(0, 3))}
+        <div style="margin-top:var(--space-8)">${tileGrid(D.taggedPosts.slice(0, 3))}</div>
       </div>`, { active: 'home', title: person.name, back: true });
   }
 
@@ -1127,6 +1140,67 @@ const W2Screens = (() => {
       </div>`;
   }
 
+  /* Interests search modal — opened by "ver mais" on Eventos. No Figma
+     frame; follows the standard topic-picker pattern (search on top,
+     suggested chips before any query). Suggestions are a random sample per
+     open, standing in for personalization. */
+  const normalize = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+  function interestResults(state) {
+    const selected = state.activeFilters;
+    const chip = t => U.tag(t, { selectable: true, selected: selected.includes(t), action: 'toggle-filter' });
+    const q = state.interestQuery.trim();
+
+    if (q) {
+      const matches = allInterests().filter(t => normalize(t).includes(normalize(q)));
+      return matches.length ? `
+        <div class="interest-group">
+          <span class="interest-group__label">Resultados</span>
+          <div class="tag-row">${matches.map(chip).join('')}</div>
+        </div>` : `
+        <p class="interests-empty">Nenhum interesse encontrado para "${esc(q)}"</p>`;
+    }
+
+    const suggestions = state.interestSuggestions.filter(t => !selected.includes(t));
+    return `
+      ${selected.length ? `
+        <div class="interest-group">
+          <span class="interest-group__label">Selecionados</span>
+          <div class="tag-row">${selected.map(chip).join('')}</div>
+        </div>` : ''}
+      <div class="interest-group">
+        <span class="interest-group__label">Sugeridos</span>
+        <div class="tag-row">${suggestions.map(chip).join('')}</div>
+      </div>`;
+  }
+
+  function interessesOverlay(state) {
+    // Lazy init covers the ?overlay=interesses deep link, which bypasses
+    // the open-interests action. Stored in state so re-renders (each chip
+    // toggle) never reshuffle under the user.
+    if (!state.interestSuggestions.length) {
+      state.interestSuggestions = [...allInterests()].sort(() => Math.random() - 0.5).slice(0, 10);
+    }
+    return `
+      <div class="overlay" data-overlay="interesses">
+        <div class="modal modal--interests" role="dialog" aria-label="Interesses">
+          <div class="modal__head">
+            <span class="modal__title">Interesses</span>
+            <span class="spacer"></span>
+            <button class="icon-btn" type="button" data-action="close-overlay" aria-label="Fechar">${icon('x')}</button>
+          </div>
+          <div class="modal__body">
+            <div class="search interests-search">
+              ${icon('search')}
+              <input type="search" placeholder="Pesquisar interesses"
+                     aria-label="Pesquisar interesses" value="${esc(state.interestQuery)}">
+            </div>
+            <div id="interest-results" class="interests-results">${interestResults(state)}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   const postOverlay = () => `
     <div class="overlay" data-overlay="post">
       <div class="modal" style="max-width:420px" role="dialog" aria-label="Post">
@@ -1164,7 +1238,8 @@ const W2Screens = (() => {
     { name: 'SendOverlay',                  route: '#/home?overlay=enviar',        node: '265:524, 268:154, 268:190', ref: 'figma' },
     { name: 'searchOverlay',                route: '#/home?overlay=pesquisar',     node: '416:263', ref: 'figma' },
     { name: 'PostOverlay',                  route: '#/home?overlay=post',          node: '632:683', ref: 'figma' },
-    { name: 'Comentários (overlay)',        route: '#/home?overlay=comentarios',   node: '—',       ref: 'derived' }
+    { name: 'Comentários (overlay)',        route: '#/home?overlay=comentarios',   node: '—',       ref: 'derived' },
+    { name: 'Interesses (overlay)',         route: '#/eventos?overlay=interesses', node: '—',       ref: 'derived' }
   ];
 
   const telas = () => U.shell(`
@@ -1196,7 +1271,7 @@ const W2Screens = (() => {
     perfil, perfilMarcado, perfilMeusEventos, perfilPessoa, perfilOrganizador,
     editarPerfil, criarEvento, gerenciador, telas,
     criarPostOverlay, sendOverlay, searchOverlay, postOverlay, comentariosOverlay,
-    filtrosOverlay,
+    filtrosOverlay, interessesOverlay, interestResults,
     INDEX
   };
 })();

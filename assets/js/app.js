@@ -28,6 +28,8 @@
     allRowsChecked: false,
     managerFilters: { status: [], organizers: [], tags: [], from: '', to: '' },
     filterOpen: false,
+    interestQuery: '',
+    interestSuggestions: [],
     overlay: null,
     liked: new Set()
   };
@@ -91,7 +93,8 @@
     'pesquisar':   () => S.searchOverlay(),
     'post':        () => S.postOverlay(),
     'comentarios': () => S.comentariosOverlay(state),
-    'filtros':     () => S.filtrosOverlay(state)
+    'filtros':     () => S.filtrosOverlay(state),
+    'interesses':  () => S.interessesOverlay(state)
   };
 
   function render() {
@@ -237,7 +240,15 @@
       /* --- eventos --- */
       case 'toggle-filter':
         toggle(state.activeFilters, tag);
-        render();
+        preserveRender();
+        return;
+
+      case 'open-interests':
+        // Empty forces the overlay's lazy init to draw a fresh random
+        // sample this open — stands in for personalization.
+        state.interestSuggestions = [];
+        state.interestQuery = '';
+        openOverlay('interesses');
         return;
 
       case 'save-event': {
@@ -287,11 +298,21 @@
         openOverlay('enviar');
         return;
 
-      case 'follow-organizer':
+      case 'follow-organizer': {
         event.preventDefault();
-        trigger.classList.toggle('is-following');
-        toast(trigger.classList.contains('is-following') ? 'Seguindo organizador' : 'Deixou de seguir');
+        const following = trigger.classList.toggle('is-following');
+        if (trigger.classList.contains('follow-plus')) {
+          // Icon control: swap "+" for the check through the shared
+          // renderer so every instance stays identical.
+          trigger.innerHTML = W2UI.followPlusIcon(following);
+        } else {
+          // Text button on the event detail screen.
+          trigger.textContent = following ? 'Seguindo' : 'Seguir';
+        }
+        trigger.setAttribute('aria-pressed', String(following));
+        toast(following ? 'Seguindo organizador' : 'Deixou de seguir');
         return;
+      }
 
       case 'toggle-follow':
         trigger.textContent = trigger.textContent.trim() === 'seguindo' ? 'seguir' : 'seguindo';
@@ -473,6 +494,15 @@
     event.preventDefault();
     const input = event.target.querySelector('input');
     if (input && input.value.trim()) { toast('Mensagem enviada'); input.value = ''; }
+  });
+
+  /* Interests search — updates only the results container per keystroke so
+     the input keeps focus and caret. */
+  document.addEventListener('input', (event) => {
+    if (!event.target.matches('.interests-search input')) return;
+    state.interestQuery = event.target.value;
+    const results = document.getElementById('interest-results');
+    if (results) results.innerHTML = S.interestResults(state);
   });
 
   /* Period filter dates — committed on change, not per keystroke. */

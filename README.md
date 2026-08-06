@@ -97,6 +97,7 @@ sistema de design porque o frame não existe (ou existe só em um modo/viewport)
 | searchOverlay | `#/home?overlay=pesquisar` | `416:263` | Figma |
 | PostOverlay | `#/home?overlay=post` | `632:683` | Figma |
 | Comentários (overlay) | `#/home?overlay=comentarios` | — | **Extrapolada** |
+| Interesses (overlay) | `#/eventos?overlay=interesses` | — | **Extrapolada** |
 | Índice de telas | `#/telas` | — | **Auxiliar do protótipo** |
 
 ### O que foi extrapolado, e a partir de quê
@@ -341,6 +342,10 @@ Não é só layout — o que dá para clicar, funciona:
   adiciona o comentário na sessão, "Responder" pré-preenche `@usuário` no
   composer, coração curte o comentário, "Publicar" só acende com texto
 - Filtros de interesse em Eventos filtram a grade de verdade (com estado vazio)
+- "ver mais" em Eventos abre o modal de interesses: busca com correspondência
+  sem acento, chips "Sugeridos" (amostra aleatória por abertura, simulando
+  personalização) e "Selecionados"; interesses escolhidos entram na linha de
+  filtros da grade
 - Seleção de interesses no onboarding habilita "Continuar"; aceitar os termos
   alterna entre os dois frames de cadastro
 - Criar Post em dois passos, com avaliação obrigatória antes de compartilhar

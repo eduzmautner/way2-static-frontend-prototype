@@ -83,16 +83,50 @@
 .icon-btn.is-on { color: var(--text-primary); }
 .icon-btn.is-on svg { fill: currentColor; }
 
-/* Circular outline "+" used to follow an organizer inline */
+/* Inline follow control next to an organizer handle.
+   One size everywhere — feed post, event card, desktop and mobile alike. */
 .follow-plus {
   display: inline-grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  /* place-content too: the checked-state disc is smaller than the 30px
+     button, and an auto-sized grid track parks at the start edge unless the
+     track itself is centered — that read as the icon "shifting". */
+  place-content: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   color: var(--icon-active);
+  transition: background-color var(--motion-fast), color var(--motion-fast);
 }
-.follow-plus svg { width: 22px; height: 22px; }
-.follow-plus.is-following { color: var(--accent); }
+.follow-plus svg { width: 30px; height: 30px; }
+
+/* Following: solid circle with a check. --action-bg/--action-text are the
+   same pair every primary button uses, so this is black-on-white in light
+   mode and inverts correctly in dark.
+
+   The disc is 20px against the outline glyph's ~22.5px drawn circle: a
+   solid disc carries more optical weight than a thin outline, so it must
+   be geometrically smaller to read as the same size. The button keeps the
+   full 30px hit target. */
+.follow-plus.is-following { color: var(--action-text); }
+.follow-plus.is-following::before {
+  content: "";
+  grid-area: 1 / 1;
+  justify-self: center;
+  align-self: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--action-bg);
+}
+.follow-plus.is-following svg {
+  grid-area: 1 / 1;
+  justify-self: center;
+  align-self: center;
+  width: 11px;
+  height: 11px;
+}
 
 /* -------------------------------------------------------------------- tags */
 .tag {

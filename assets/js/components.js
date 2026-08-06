@@ -60,6 +60,21 @@ const W2UI = (() => {
     return `<span class="avatar ${sizeCls} ${className}" title="${esc(name)}">${inner}</span>`;
   }
 
+  /* Inline follow control next to an organizer handle. Two states: an
+     outline "+" when not following, a filled circle with a check when
+     following. Single source of truth — the click handler in app.js swaps
+     the glyph through followPlusIcon() so every instance behaves alike. */
+  const followPlusIcon = following =>
+    following ? icon('check', { width: 2.5 }) : icon('plusCircle');
+
+  function followPlus(handle, following = false) {
+    return `<button class="follow-plus ${following ? 'is-following' : ''}"
+                    type="button" data-action="follow-organizer"
+                    aria-pressed="${following}"
+                    aria-label="${following ? 'Deixar de seguir' : 'Seguir'} @${esc(handle)}"
+            >${followPlusIcon(following)}</button>`;
+  }
+
   /* ----------------------------------------------------------------- tag */
   function tag(label, { selected = false, selectable = false, removable = false, action = '' } = {}) {
     const cls = ['tag', selectable ? 'tag--selectable' : '', selected ? 'is-selected' : ''].join(' ');
@@ -101,9 +116,7 @@ const W2UI = (() => {
           </div>
           <div class="post__organizer">
             <a class="post__organizer-handle" href="#/perfil-organizador/${esc(p.organizer)}">@${esc(p.organizer)}</a>
-            <button class="follow-plus ${p.isFollowingOrganizer ? 'is-following' : ''}"
-                    type="button" data-action="follow-organizer"
-                    aria-label="Seguir @${esc(p.organizer)}">${icon('plusCircle')}</button>
+            ${followPlus(p.organizer, p.isFollowingOrganizer)}
           </div>
         </header>
 
@@ -134,8 +147,7 @@ const W2UI = (() => {
       <article class="event-card" data-event="${esc(e.id)}">
         <header class="event-card__head">
           <a class="event-card__organizer" href="#/perfil-organizador/${esc(e.organizer)}">@${esc(e.organizer)}</a>
-          <button class="follow-plus" type="button" data-action="follow-organizer"
-                  aria-label="Seguir @${esc(e.organizer)}">${icon('plusCircle')}</button>
+          ${followPlus(e.organizer, e.isFollowingOrganizer)}
         </header>
 
         <a href="#/evento/${esc(e.id)}" aria-label="${esc(e.title)}">
@@ -271,6 +283,7 @@ const W2UI = (() => {
   return {
     esc, artStyle, media, thumb, avatar, tag, tagRow, rating,
     post, eventCard, eventRow, field, searchInput, backButton,
+    followPlus, followPlusIcon,
     rail, tabbar, topbar, shell, bareShell, NAV
   };
 })();

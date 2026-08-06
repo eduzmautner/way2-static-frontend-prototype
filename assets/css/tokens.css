@@ -14,7 +14,10 @@
   /* ---------------------------------------------------------------- layer 1
      Raw palette — light */
   --w2-white:           #FFFFFF;
-  --w2-extra-light-grey:#FAFAFA;
+  /* Was #FAFAFA (hsl 0,0%,98%) per the Figma guideline sheet; darkened to
+     97% lightness (2026-08-05, Eduardo) — card boundaries were too faint
+     against the white app background. Update design-guidelines to match. */
+  --w2-extra-light-grey:#F7F7F7;
   --w2-light-grey:      #D9D9D9;
   --w2-divider-light:   #CCCCCC;
   --w2-text-primary:    #000000;
