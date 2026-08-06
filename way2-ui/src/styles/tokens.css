@@ -1,0 +1,120 @@
+/* ==========================================================================
+   Way2 — design tokens (phase 2)
+   Ported 1:1 from the phase-1 prototype (assets/css/tokens.css), which
+   supersedes the Figma design-guidelines sheet on two points:
+   extraLightGrey #F7F7F7 (was #FAFAFA) and the two-radius scale.
+
+   Layer 1: raw palette. Layer 2: semantic aliases — the only thing Tailwind
+   utilities reference, so [data-theme="dark"] retints the entire library.
+   ========================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Raw palette — light */
+  --w2-white: #FFFFFF;
+  --w2-extra-light-grey: #F7F7F7;
+  --w2-light-grey: #D9D9D9;
+  --w2-divider-light: #CCCCCC;
+  --w2-text-primary: #000000;
+  --w2-text-secondary: #606060;
+  --w2-placeholder: #808080;
+  --w2-accent-green: #529A60;
+  --w2-orange-start: #FF5C00;
+  --w2-orange-end: #FF9900;
+
+  /* Raw palette — dark */
+  --w2-surface-dark: #1A1A1A;
+  --w2-dark-card-bkg: #212121;
+  --w2-default-icon: #333333;
+  --w2-selected-icon: #E6E6E6;
+  --w2-text-white: #FFFFFF;
+  --w2-text-sec-dark: #B3B3B3;
+  --w2-elevated-card: #252525;
+  --w2-search-bar: #3A3A3A;
+
+  /* Semantic aliases — light */
+  --bg-app: var(--w2-white);
+  --bg-surface: var(--w2-white);
+  --bg-surface-subtle: var(--w2-extra-light-grey);
+  --bg-elevated: var(--w2-white);
+  --bg-input: var(--w2-white);
+  --bg-search: var(--w2-white);
+  --bg-media: var(--w2-light-grey);
+  --bg-scrim: rgba(0, 0, 0, 0.55);
+  --bg-disabled: var(--w2-light-grey);
+
+  --text-primary: var(--w2-text-primary);
+  --text-secondary: var(--w2-text-secondary);
+  --text-placeholder: var(--w2-placeholder);
+  --text-inverse: var(--w2-white);
+  --text-disabled: var(--w2-text-secondary);
+
+  --border-default: var(--w2-divider-light);
+  --border-subtle: var(--w2-light-grey);
+  --border-strong: var(--w2-text-primary);
+
+  --icon-default: var(--w2-text-secondary);
+  --icon-active: var(--w2-text-primary);
+
+  --accent: var(--w2-accent-green);
+  --accent-soft: rgba(82, 154, 96, 0.12);
+
+  --action-bg: var(--w2-text-primary);
+  --action-text: var(--w2-white);
+  --action-bg-hover: #262626;
+
+  --badge-unread: #FF3B30;
+}
+
+[data-theme='dark'] {
+  --bg-app: var(--w2-surface-dark);
+  --bg-surface: var(--w2-dark-card-bkg);
+  --bg-surface-subtle: var(--w2-dark-card-bkg);
+  --bg-elevated: var(--w2-elevated-card);
+  --bg-input: var(--w2-elevated-card);
+  --bg-search: var(--w2-search-bar);
+  --bg-media: var(--w2-default-icon);
+  --bg-scrim: rgba(0, 0, 0, 0.7);
+  --bg-disabled: var(--w2-default-icon);
+
+  --text-primary: var(--w2-text-white);
+  --text-secondary: var(--w2-text-sec-dark);
+  --text-placeholder: var(--w2-placeholder);
+  --text-inverse: var(--w2-surface-dark);
+  --text-disabled: var(--w2-placeholder);
+
+  --border-default: var(--w2-default-icon);
+  --border-subtle: var(--w2-default-icon);
+  --border-strong: var(--w2-selected-icon);
+
+  --icon-default: var(--w2-placeholder);
+  --icon-active: var(--w2-selected-icon);
+
+  --accent: var(--w2-accent-green);
+  --accent-soft: rgba(82, 154, 96, 0.18);
+
+  --action-bg: var(--w2-text-white);
+  --action-text: var(--w2-surface-dark);
+  --action-bg-hover: #E6E6E6;
+}
+
+@layer base {
+  body {
+    background: var(--bg-app);
+    color: var(--text-primary);
+    font-family: theme('fontFamily.ui');
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}

@@ -362,12 +362,13 @@ fingem persistir.
 
 ---
 
-## Fase 2 — ainda não iniciada
+## Fase 2 — iniciada em `way2-ui/`
 
-A extração para React + Tailwind está fora do escopo deste entregável, como o
-brief pede. O que já está preparado para ela:
+A extração para React + Tailwind começou: **`way2-ui/`** contém os blocos de
+construção (átomos apenas — botões, ícones, tags, inputs, avatar, rating…)
+com os tokens portados 1:1 e uma galeria de demonstração
+(`npm install && npm run dev`). Composições (cards, banners, formulários)
+seguem no app. Ver `way2-ui/README.md`.
 
-- `components.js` tem a fronteira de props já desenhada
-- `data.js` é o único ponto de acoplamento com conteúdo
-- os aliases semânticos mapeiam direto para um `theme.extend` do Tailwind
-- as classes `.t-*` mapeiam direto para um plugin de tipografia
+O protótipo estático da fase 1 permanece intacto e continua abrindo direto
+de `index.html`.

@@ -6,6 +6,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["/Users/eduardomautner/Desktop/Dev/Way2/.claude/serve.js"],
       "port": 8080
+    },
+    {
+      "name": "way2-ui",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/eduardomautner/Desktop/Dev/Way2/way2-ui"],
+      "port": 5173
     }
   ]
 }
